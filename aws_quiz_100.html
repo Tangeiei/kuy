@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Cloud Practitioner — 100 ข้อ</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0e1a; --surface:#111827; --surface2:#1a2235; --border:#1e3a5f;
+  --accent:#00d4ff; --accent2:#ff6b35; --accent3:#7c3aed;
+  --success:#10b981; --danger:#ef4444; --warning:#f59e0b;
+  --text:#e2e8f0; --muted:#64748b; --glow:0 0 20px rgba(0,212,255,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Kanit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,.05) 0%,transparent 50%),
+  radial-gradient(ellipse at 80% 80%,rgba(124,58,237,.05) 0%,transparent 50%);}
+
+/* HEADER */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-ico{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent3));
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--glow);}
+.logo-t{font-size:17px;font-weight:700;color:var(--accent);letter-spacing:1px;}
+.logo-s{font-size:11px;color:var(--muted);}
+.hdr-stats{display:flex;gap:14px;align-items:center;}
+.pill{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 14px;
+  font-size:13px;display:flex;align-items:center;gap:6px;}
+.pill span{color:var(--accent);font-weight:700;font-family:'JetBrains Mono',monospace;}
+
+/* PROGRESS */
+.prog-sec{padding:12px 24px;background:var(--surface);border-bottom:1px solid var(--border);}
+.prog-info{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:var(--muted);}
+.prog-wrap{background:var(--surface2);border-radius:10px;height:7px;overflow:hidden;border:1px solid var(--border);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:10px;transition:width .5s ease;box-shadow:var(--glow);}
+
+/* MAIN */
+.main{max-width:820px;margin:0 auto;padding:28px 20px;}
+
+/* STREAK */
+.streak{display:flex;gap:3px;margin-bottom:16px;flex-wrap:wrap;}
+.s-dot{width:18px;height:18px;border-radius:3px;background:var(--surface2);border:1px solid var(--border);transition:all .3s;}
+.s-dot.c{background:var(--success);border-color:var(--success);}
+.s-dot.w{background:var(--danger);border-color:var(--danger);}
+.s-dot.cur{border-color:var(--accent);box-shadow:0 0 6px rgba(0,212,255,.5);}
+
+/* QUESTION CARD */
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;
+  margin-bottom:16px;animation:slideIn .35s ease;position:relative;overflow:hidden;}
+.qcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent3));}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.qmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:8px;flex-wrap:wrap;}
+.qbadge{background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(124,58,237,.15));border:1px solid var(--accent);
+  color:var(--accent);border-radius:7px;padding:3px 11px;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.mtag{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:3px 11px;font-size:11px;}
+.qtxt{font-size:17px;font-weight:500;line-height:1.65;margin-bottom:20px;}
+.mhint{font-size:12px;color:var(--warning);margin-bottom:12px;}
+
+/* OPTIONS */
+.opts{display:flex;flex-direction:column;gap:9px;}
+.opt{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:13px 16px;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--text);}
+.opt:hover:not(.dis){border-color:var(--accent);background:rgba(0,212,255,.05);transform:translateX(3px);}
+.opt.sel{border-color:var(--accent);background:rgba(0,212,255,.1);}
+.opt.cor{border-color:var(--success);background:rgba(16,185,129,.1);animation:cpulse .5s ease;}
+.opt.wrg{border-color:var(--danger);background:rgba(239,68,68,.1);animation:wshake .4s ease;}
+.opt.msd{border-color:var(--warning);background:rgba(245,158,11,.1);}
+.opt.dis{cursor:not-allowed;}
+@keyframes cpulse{0%{transform:scale(1);}50%{transform:scale(1.01);}100%{transform:scale(1);}}
+@keyframes wshake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.olet{width:28px;height:28px;border-radius:7px;background:var(--surface);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:700;flex-shrink:0;transition:all .2s;}
+.opt.sel .olet{background:var(--accent);border-color:var(--accent);color:#000;}
+.opt.cor .olet{background:var(--success);border-color:var(--success);color:#fff;}
+.opt.wrg .olet{background:var(--danger);border-color:var(--danger);color:#fff;}
+.opt.msd .olet{background:var(--warning);border-color:var(--warning);color:#000;}
+.oico{margin-left:auto;font-size:16px;}
+
+/* EXPLANATION */
+.exp{margin-top:16px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;
+  padding:18px;display:none;animation:fadeIn .3s ease;}
+.exp.show{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.exph{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-weight:600;font-size:14px;}
+.exph.ec{color:var(--success);} .exph.ew{color:var(--danger);}
+.expt{font-size:13px;line-height:1.7;color:var(--muted);}
+
+/* ACTIONS */
+.acts{display:flex;gap:10px;margin-top:20px;}
+.btn{flex:1;padding:13px;border-radius:11px;border:none;font-family:'Kanit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-chk{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;box-shadow:var(--glow);}
+.btn-chk:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,212,255,.4);}
+.btn-chk:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.btn-nxt{background:var(--surface2);border:1px solid var(--border);color:var(--text);}
+.btn-nxt:hover{border-color:var(--accent);color:var(--accent);}
+
+/* START PAGE */
+#start-page{text-align:center;padding:50px 16px;}
+.sh{font-size:44px;margin-bottom:12px;}
+.st{font-size:32px;font-weight:700;margin-bottom:6px;background:linear-gradient(90deg,var(--accent),var(--accent3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ss{font-size:15px;color:var(--muted);margin-bottom:36px;}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:32px;text-align:left;}
+.mod-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.mc-num{font-size:10px;color:var(--muted);margin-bottom:3px;font-family:'JetBrains Mono',monospace;}
+.mc-name{font-size:12px;font-weight:500;}
+.mc-cnt{font-size:11px;color:var(--accent);margin-top:3px;}
+.start-opts{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.sog label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px;}
+.sog select{background:var(--surface);border:1px solid var(--border);color:var(--text);
+  border-radius:8px;padding:8px 12px;font-family:'Kanit',sans-serif;font-size:13px;cursor:pointer;}
+.btn-start{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;border:none;
+  border-radius:13px;padding:15px 48px;font-size:17px;font-weight:700;cursor:pointer;
+  font-family:'Kanit',sans-serif;box-shadow:var(--glow);transition:all .2s;}
+.btn-start:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,212,255,.5);}
+
+/* RESULT */
+#result-page{display:none;}
+.res-wrap{text-align:center;padding:36px 16px;}
+.res-circ{width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;position:relative;box-shadow:0 0 40px rgba(0,212,255,.3);}
+.res-inner{width:114px;height:114px;border-radius:50%;background:var(--surface);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.res-pct{font-size:28px;font-weight:700;color:var(--accent);font-family:'JetBrains Mono',monospace;}
+.res-plbl{font-size:10px;color:var(--muted);}
+.res-title{font-size:26px;font-weight:700;margin-bottom:6px;}
+.res-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.res-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.rs{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;}
+.rs-n{font-size:26px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
+.rs-l{font-size:12px;color:var(--muted);}
+.res-lv{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:22px;}
+.lv-badge{display:inline-block;padding:5px 18px;border-radius:18px;font-weight:700;font-size:15px;margin-bottom:10px;}
+.lv-desc{font-size:13px;color:var(--muted);line-height:1.65;}
+.res-mod-breakdown{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:22px;text-align:left;}
+.rmb-title{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--accent);}
+.rmb-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.rmb-name{font-size:12px;color:var(--muted);width:160px;flex-shrink:0;}
+.rmb-bar-wrap{flex:1;background:var(--surface2);border-radius:6px;height:10px;overflow:hidden;}
+.rmb-bar{height:100%;border-radius:6px;transition:width 1s ease;}
+.rmb-score{font-size:12px;font-family:'JetBrains Mono',monospace;width:40px;text-align:right;}
+.btn-rs{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;border:none;
+  border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'Kanit',sans-serif;box-shadow:var(--glow);transition:all .2s;margin:0 6px;}
+.btn-rs:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,212,255,.4);}
+.btn-rs-o{background:transparent;color:var(--accent);border:1px solid var(--accent);
+  border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'Kanit',sans-serif;transition:all .2s;margin:0 6px;}
+.btn-rs-o:hover{background:rgba(0,212,255,.1);}
+@media(max-width:600px){.hdr-stats{display:none;}.qtxt{font-size:15px;}.main{padding:14px;}.res-stats{grid-template-columns:1fr 1fr;}.rmb-name{width:100px;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">
+    <div class="logo-ico">☁️</div>
+    <div><div class="logo-t">AWS QUIZ</div><div class="logo-s">Cloud Practitioner · 100 ข้อ</div></div>
+  </div>
+  <div class="hdr-stats" id="hdr-stats" style="display:none">
+    <div class="pill">✅ <span id="sc">0</span></div>
+    <div class="pill">❌ <span id="sw">0</span></div>
+    <div class="pill">🎯 <span id="sp">0%</span></div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- START -->
+<div id="start-page">
+  <div class="sh">☁️</div>
+  <div class="st">AWS Cloud Practitioner Quiz</div>
+  <div class="ss">ครบ 100 ข้อ · 10 โมดูล · สุ่มข้อทุกครั้ง · เฉลยพร้อมคำอธิบาย</div>
+  <div class="mod-grid" id="mod-grid"></div>
+  <div class="start-opts">
+    <div class="sog"><label>จำนวนข้อ</label>
+      <select id="qc"><option value="10">10 ข้อ</option><option value="20">20 ข้อ</option>
+        <option value="50">50 ข้อ</option><option value="100" selected>100 ข้อ (ทั้งหมด)</option></select>
+    </div>
+    <div class="sog"><label>โมดูล</label>
+      <select id="mf"><option value="0">ทุกโมดูล</option>
+        <option value="1">M1 · Cloud Basics</option><option value="2">M2 · Pricing</option>
+        <option value="3">M3 · Infrastructure</option><option value="4">M4 · Security</option>
+        <option value="5">M5 · Networking</option><option value="6">M6 · Compute</option>
+        <option value="7">M7 · Storage</option><option value="8">M8 · Databases</option>
+        <option value="9">M9 · Well-Architected</option><option value="10">M10 · Monitoring</option>
+      </select>
+    </div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">🚀 เริ่มทำแบบทดสอบ</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-page" style="display:none">
+  <div class="prog-sec" style="margin:-28px -20px 20px;padding:12px 20px;">
+    <div class="prog-info"><span id="pgt">ข้อ 1 จาก 100</span><span id="psc">คะแนน: 0/0</span></div>
+    <div class="prog-wrap"><div class="prog-fill" id="pfill" style="width:0%"></div></div>
+  </div>
+  <div class="streak" id="streak"></div>
+  <div id="qcon"></div>
+</div>
+
+<!-- RESULT -->
+<div id="result-page">
+  <div class="res-wrap" id="res-con"></div>
+</div>
+
+</div>
+
+<script>
+const MN={1:"Cloud Computing Basics",2:"Pricing & Billing",3:"Global Infrastructure",
+  4:"Security",5:"Networking (VPC)",6:"Compute (EC2/Lambda)",7:"Storage (S3/EBS)",
+  8:"Databases",9:"Well-Architected",10:"Auto Scaling & Monitoring"};
+
+const Q=[
+// ═══════════════════════════ MODULE 1 — Cloud Computing Basics ═══════════════════════════
+{m:1,q:"รูปแบบการกำหนดราคาตามความต้องการจริงของ AWS เรียกว่าอะไร?",t:"s",
+ o:["Pay as you go","Subscription Model","Reserved Pricing","Spot Pricing"],a:[0],
+ e:"Pay as you go = จ่ายเฉพาะที่ใช้จริง ไม่มีค่าธรรมเนียมล่วงหน้า หยุดใช้เมื่อไหร่ก็หยุดจ่ายเมื่อนั้น"},
+
+{m:1,q:"ข้อใดต่อไปนี้ ไม่ใช่ โมเดล Cloud Computing?",t:"s",
+ o:["IaaS (Infrastructure as a Service)","PaaS (Platform as a Service)","SaaS (Software as a Service)","System Administration as a Service"],a:[3],
+ e:"โมเดล Cloud Computing มี 3 รูปแบบ: IaaS, PaaS, SaaS — ไม่มี System Administration as a Service"},
+
+{m:1,q:"AWS เป็นเจ้าของฮาร์ดแวร์ และลูกค้า Provision ทรัพยากรเองผ่าน Console/API — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[0],
+ e:"ถูกต้อง! AWS ซื้อและดูแลฮาร์ดแวร์ทั้งหมด ลูกค้าเพียงใช้งานทรัพยากรผ่าน Management Console, CLI หรือ SDKs"},
+
+{m:1,q:"ข้อใดต่อไปนี้ไม่ใช่ประโยชน์หลักของ Cloud Computing?",t:"s",
+ o:["ลดต้นทุน Capital Expenditure","ปรับขนาดได้ยืดหยุ่น","จ่ายค่าจัดวางและติดตั้งเซิร์ฟเวอร์เอง","เข้าถึงได้ทั่วโลก"],a:[2],
+ e:"การจ่ายค่าจัดวางและติดตั้งเซิร์ฟเวอร์เองเป็นลักษณะของ On-premises ไม่ใช่ Cloud Computing"},
+
+{m:1,q:"วิธีเข้าถึง AWS มีอะไรบ้าง? (เลือก 3 ข้อ)",t:"m",
+ o:["AWS Management Console","AWS CLI (Command Line Interface)","AWS SDKs","AWS Hardware Dongle"],a:[0,1,2],
+ e:"AWS รองรับ 3 วิธีหลัก — Management Console (GUI), CLI (Command Line) และ SDKs (โปรแกรมมิ่ง) ไม่มี Hardware Dongle"},
+
+{m:1,q:"Economies of Scale บน AWS เกิดจากอะไร?",t:"s",
+ o:["AWS ลงทุนในเทคโนโลยีใหม่","ลูกค้าหลายแสนรายรวมกันใช้ Infrastructure เดียวกัน","AWS ใช้พลังงานหมุนเวียน","AWS มีพนักงานน้อย"],a:[1],
+ e:"เมื่อลูกค้าหลายแสนรายใช้ Infrastructure ร่วมกัน ต้นทุนต่อหน่วยลดลง AWS จึงส่งผ่านราคาถูกลงให้ลูกค้า"},
+
+{m:1,q:"บริการ Compute Service หลักของ AWS คืออะไร?",t:"s",
+ o:["Amazon S3","Amazon EC2","Amazon RDS","Amazon VPC"],a:[1],
+ e:"Amazon EC2 (Elastic Compute Cloud) เป็นบริการ Compute หลักของ AWS ให้บริการ Virtual Machines บนคลาวด์"},
+
+{m:1,q:"ข้อใดต่อไปนี้ไม่ใช่ข้อดีของ AWS Cloud? (เลือก 2 ข้อ)",t:"m",
+ o:["ต้องผ่าน Multiple Procurement Cycles","เพิ่ม High Latency","ปรับขนาดได้ตามความต้องการ","ลดต้นทุน Infrastructure"],a:[0,1],
+ e:"Multiple Procurement Cycles (กระบวนการจัดซื้อหลายขั้นตอน) และ High Latency ไม่ใช่ข้อดี แต่เป็นปัญหาของ Traditional IT"},
+
+{m:1,q:"Cloud Deployment Model แบบ Hybrid Cloud คืออะไร?",t:"s",
+ o:["ใช้ Cloud Provider หลายเจ้า","รวม On-premises กับ Public Cloud เข้าด้วยกัน","ใช้เฉพาะ Private Cloud","ใช้เฉพาะ Public Cloud"],a:[1],
+ e:"Hybrid Cloud คือการรวม On-premises infrastructure กับ Public Cloud เข้าด้วยกัน เชื่อมต่อกันผ่าน Network"},
+
+{m:1,q:"ลักษณะสำคัญของ Cloud Computing ตาม NIST คืออะไร? (เลือก 2 ข้อ)",t:"m",
+ o:["On-demand self-service","Dedicated physical hardware","Measured service (จ่ายตามใช้)","Manual provisioning only"],a:[0,2],
+ e:"NIST กำหนดลักษณะ Cloud Computing 5 ข้อ รวมถึง On-demand self-service (จัดการได้เอง) และ Measured service (จ่ายตามที่ใช้จริง)"},
+
+// ═══════════════════════════ MODULE 2 — Pricing & Billing ═══════════════════════════
+{m:2,q:"ตัวเลือก Reserved Instances มีอะไรบ้าง? (เลือก 3 ข้อ)",t:"m",
+ o:["AURI — All Upfront Reserved Instance","PURI — Partial Upfront Reserved Instance","NURI — No Upfront Reserved Instance","FURI — Full Upfront Reserved Instance"],a:[0,1,2],
+ e:"Reserved Instances มี 3 แบบ — All Upfront (จ่ายเต็มล่วงหน้า), Partial Upfront (จ่ายบางส่วน), No Upfront (ไม่จ่ายล่วงหน้า)"},
+
+{m:2,q:"เครื่องมือใดใช้ดูรายละเอียดค่าใช้จ่าย EC2 ย้อนหลัง 3 เดือน?",t:"s",
+ o:["AWS Cost Explorer","AWS Pricing Calculator","AWS Budgets","AWS Trusted Advisor"],a:[0],
+ e:"AWS Cost Explorer ดูข้อมูลค่าใช้จ่ายย้อนหลังได้ถึง 12 เดือน และพยากรณ์ล่วงหน้าได้ 3 เดือน"},
+
+{m:2,q:"Reserved Instances ต้องจ่ายเต็มจำนวนล่วงหน้าเสมอ — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[1],
+ e:"ผิด! Reserved Instances มี 3 ตัวเลือกการชำระ — All Upfront, Partial Upfront และ No Upfront"},
+
+{m:2,q:"ข้อใดถูกต้องเกี่ยวกับการคิดค่าบริการ AWS?",t:"s",
+ o:["Compute คิดค่าบริการรายเดือน","Storage คิดค่าบริการราย GB","Data Transfer เข้า AWS มีค่าใช้จ่าย","Data Transfer ออก AWS ฟรีเสมอ"],a:[1],
+ e:"Storage คิดค่าบริการตามจำนวน GB ที่ใช้ — Compute คิดรายชั่วโมง/วินาที Data Transfer เข้าฟรี แต่ออกมีค่าใช้จ่าย"},
+
+{m:2,q:"แผน AWS Support มีกี่แบบ และมีอะไรบ้าง?",t:"s",
+ o:["3 แบบ: Basic, Professional, Enterprise","4 แบบ: Basic, Developer, Business, Enterprise","5 แบบ: Free, Basic, Developer, Business, Enterprise","4 แบบ: Free, Developer, Business, Enterprise"],a:[1],
+ e:"AWS Support มี 4 แผน — Basic (ฟรี), Developer, Business และ Enterprise แต่ละแผนให้บริการแตกต่างกัน"},
+
+{m:2,q:"เครื่องมือใดใช้ประมาณค่าใช้จ่ายก่อนเริ่มใช้งาน AWS?",t:"s",
+ o:["AWS Cost Explorer","AWS Pricing Calculator","AWS Budgets","AWS Organizations"],a:[1],
+ e:"AWS Pricing Calculator ใช้ประมาณการณ์ค่าใช้จ่ายล่วงหน้าก่อนเริ่มใช้งาน AWS จริง ไม่ต้องสมัคร Account"},
+
+{m:2,q:"AWS Free Tier ไม่มีขีดจำกัดตลอด 12 เดือน — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[1],
+ e:"ผิด! AWS Free Tier มีขีดจำกัด เช่น EC2 t2.micro ได้ 750 ชั่วโมง/เดือน และ S3 ได้ 5 GB ต่อเดือน"},
+
+{m:2,q:"ข้อดีของ AWS Organizations มีอะไรบ้าง? (เลือก 2 ข้อ)",t:"m",
+ o:["สร้างกลุ่มบัญชีและกำหนดนโยบายได้","จัดการบัญชีอัตโนมัติด้วย API","ต้องจัดการบัญชีแยกกันทีละบัญชี","ไม่รองรับ Consolidated Billing"],a:[0,1],
+ e:"AWS Organizations ช่วยสร้างกลุ่มบัญชี (OUs), กำหนด Service Control Policies และใช้ API จัดการบัญชีอัตโนมัติ"},
+
+{m:2,q:"Spot Instances เหมาะกับงานประเภทใดที่สุด?",t:"s",
+ o:["Web Server ที่ต้องรันตลอด 24/7","งานที่หยุดได้และรันใหม่ได้ เช่น Batch Processing","ฐานข้อมูล Production","งานที่ต้องการ Guaranteed Capacity"],a:[1],
+ e:"Spot Instances ราคาถูกสุดถึง 90% แต่อาจถูกยกเลิกได้ เหมาะกับงาน Batch, Data Analysis, Rendering ที่หยุดและรันใหม่ได้"},
+
+{m:2,q:"Consolidated Billing ใน AWS Organizations ให้ประโยชน์อะไร?",t:"s",
+ o:["จ่ายบิลแยกกันได้ชัดเจน","รวมการใช้งานทุกบัญชีเพื่อรับส่วนลดปริมาณ","เพิ่มต้นทุนการจัดการ","จำกัดจำนวนบัญชีที่ใช้ได้"],a:[1],
+ e:"Consolidated Billing รวมการใช้งานทุกบัญชีเข้าด้วยกัน ทำให้ได้รับส่วนลดตามปริมาณการใช้งาน (Volume Discount)"},
+
+// ═══════════════════════════ MODULE 3 — Global Infrastructure ═══════════════════════════
+{m:3,q:"CloudFront ใช้สิ่งใดในการส่งข้อมูลด้วย Latency ต่ำ?",t:"s",
+ o:["AWS Regions","AWS Availability Zones","AWS Edge Locations","AWS Local Zones"],a:[2],
+ e:"CloudFront ใช้ Edge Locations กว่า 400 แห่งทั่วโลก เพื่อ Cache ข้อมูลใกล้กับผู้ใช้ ลด Latency ได้มาก"},
+
+{m:3,q:"Region ใกล้ผู้ใช้ทำให้ Latency เป็นอย่างไร?",t:"s",
+ o:["เพิ่มขึ้น","ลดลง","ไม่เปลี่ยนแปลง","คาดเดาไม่ได้"],a:[1],
+ e:"ยิ่ง Region ใกล้ผู้ใช้มากเท่าไหร่ ระยะทางที่ข้อมูลต้องเดินทางยิ่งสั้น Latency ก็ยิ่งลดลง"},
+
+{m:3,q:"พื้นที่ภูมิศาสตร์ที่มี Availability Zones 2+ แห่ง เรียกว่าอะไร?",t:"s",
+ o:["Edge Location","Availability Zone","AWS Region","Data Center"],a:[2],
+ e:"AWS Region คือพื้นที่ทางภูมิศาสตร์ที่มีอย่างน้อย 2-3 AZs — ปัจจุบันมีมากกว่า 30 Regions ทั่วโลก"},
+
+{m:3,q:"AZs ใน Region เดียวกันเชื่อมต่อกันผ่านอะไร?",t:"s",
+ o:["Public Internet","Satellite Link","Private High-speed Fiber Optic Network","VPN Connection"],a:[2],
+ e:"AZs ใน Region เดียวกันเชื่อมต่อกันผ่าน Private Fiber Optic Network ความเร็วสูง Latency ต่ำมาก"},
+
+{m:3,q:"ข้อใดต่อไปนี้เกี่ยวกับ AWS Regions เป็นความจริง? (เลือก 2 ข้อ)",t:"m",
+ o:["Region คือสถานที่จริงที่มี AZs หลายแห่ง","แต่ละ Region อยู่ในพื้นที่ภูมิศาสตร์แยกจากกัน","Region ทุกแห่งมีเพียง 2 AZs","Edge Locations อยู่ในที่เดียวกับ Regions เท่านั้น"],a:[0,1],
+ e:"AWS Region คือสถานที่จริงที่มี AZs หลายแห่ง และแต่ละ Region อยู่แยกจากกันทางภูมิศาสตร์เพื่อ Fault Isolation"},
+
+{m:3,q:"ระบบที่มี Component Redundancy เรียกว่าอะไร?",t:"s",
+ o:["Scalable","Elastic","Fault Tolerant","Highly Available"],a:[2],
+ e:"Fault Tolerant หมายถึงระบบที่มี Component Redundancy สามารถทำงานต่อได้แม้บาง Component ล้มเหลว"},
+
+{m:3,q:"AWS แนะนำให้ Provision ทรัพยากรในกี่ AZs เพื่อความทนทาน?",t:"s",
+ o:["1 AZ","2 AZs","หลาย AZs (Multiple)","ทุก AZs ใน Region"],a:[2],
+ e:"AWS แนะนำให้ Deploy ทรัพยากรในหลาย AZs เพื่อป้องกันการหยุดชะงักหาก AZ ใด AZ หนึ่งมีปัญหา"},
+
+{m:3,q:"Edge Locations อยู่ในพื้นที่เดียวกับ Regions เท่านั้น — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[1],
+ e:"ผิด! Edge Locations มีมากกว่า Regions มาก (400+ แห่ง) และกระจายอยู่ในเมืองต่างๆ ทั่วโลกเพื่อให้ใกล้ผู้ใช้"},
+
+{m:3,q:"ปัจจัยใดบ้างที่ควรพิจารณาในการเลือก AWS Region? (เลือก 2 ข้อ)",t:"m",
+ o:["ความใกล้ชิดกับผู้ใช้ (Proximity)","ข้อกำหนดด้านกฎหมายและข้อมูล (Compliance)","สีของ Logo AWS ใน Region นั้น","จำนวนพนักงาน AWS ใน Region"],a:[0,1],
+ e:"ควรเลือก Region ที่ใกล้ผู้ใช้ (ลด Latency) และพิจารณา Data Residency / Compliance requirements ของแต่ละประเทศ"},
+
+{m:3,q:"Availability Zone (AZ) คืออะไร?",t:"s",
+ o:["ชื่ออื่นของ AWS Region","Data Center หนึ่งแห่งหรือมากกว่าที่แยกจากกันอย่างอิสระ","ที่ตั้งของ Edge Location","Virtual Private Cloud"],a:[1],
+ e:"AZ คือ Data Center หนึ่งแห่งหรือมากกว่าที่มีไฟฟ้า, เครือข่าย และระบบระบายความร้อนแยกกัน เพื่อป้องกัน Single Point of Failure"},
+
+// ═══════════════════════════ MODULE 4 — Security ═══════════════════════════
+{m:4,q:"ใน Shared Responsibility Model AWS รับผิดชอบอะไร?",t:"s",
+ o:["Security IN the Cloud (การกำหนดค่า OS, Application)","Security OF the Cloud (ฮาร์ดแวร์, เครือข่าย, โครงสร้างพื้นฐาน)","การเข้ารหัสข้อมูลของลูกค้า","การจัดการ IAM Users"],a:[1],
+ e:"AWS รับผิดชอบ Security OF the Cloud — ฮาร์ดแวร์, เครือข่าย, โครงสร้างพื้นฐาน ลูกค้ารับผิดชอบ Security IN the Cloud"},
+
+{m:4,q:"ตัวอย่าง Security IN the Cloud (ความรับผิดชอบของลูกค้า) คืออะไร? (เลือก 2 ข้อ)",t:"m",
+ o:["การกำหนดค่า Security Groups","การเข้ารหัสข้อมูล at rest และ in transit","การดูแลฮาร์ดแวร์ในศูนย์ข้อมูล","การจัดการ Physical Network"],a:[0,1],
+ e:"ลูกค้ารับผิดชอบ Security Group Configuration และการเข้ารหัสข้อมูล — ส่วน Hardware และ Physical Network เป็นของ AWS"},
+
+{m:4,q:"Best Practice IAM ที่ถูกต้องมีอะไรบ้าง? (เลือก 2 ข้อ)",t:"m",
+ o:["ให้สิทธิ์เฉพาะที่จำเป็น (Least Privilege)","กำหนดสิทธิ์แบบ Fine-grained","ให้ทุกคนใช้ Root User เพื่อความสะดวก","แชร์ Password และ Access Key กัน"],a:[0,1],
+ e:"Least Privilege = ให้สิทธิ์น้อยที่สุดเท่าที่จำเป็น และใช้ Fine-grained permissions เพื่อควบคุมการเข้าถึงอย่างแม่นยำ"},
+
+{m:4,q:"งานใดที่ควรทำโดย Root User เท่านั้น?",t:"s",
+ o:["สร้าง EC2 Instance","เปลี่ยน AWS Support Plan","สร้าง S3 Bucket","เพิ่ม IAM User"],a:[1],
+ e:"Root User ควรใช้เฉพาะงานที่ IAM User ทำไม่ได้ เช่น เปลี่ยน Support Plan, ปิดบัญชี AWS, เปลี่ยน Payment Method"},
+
+{m:4,q:"หลังจาก Login ครั้งแรกควรทำอะไรกับ Root User?",t:"s",
+ o:["ใช้งาน Root User ต่อไปตามปกติ","ลบ Access Keys ของ Root User","แชร์ Root User ให้ทีม","ปิด MFA เพื่อความสะดวก"],a:[1],
+ e:"หลัง Login ครั้งแรกควรลบ Root User Access Keys ทันที เปิด MFA และสร้าง IAM User แทนเพื่อใช้งานประจำวัน"},
+
+{m:4,q:"การเพิ่มชั้นความปลอดภัยในการ Login เรียกว่าอะไร?",t:"s",
+ o:["SSL Certificate","MFA (Multi-Factor Authentication)","VPN Tunnel","SSH Key Pair"],a:[1],
+ e:"MFA เพิ่มชั้นความปลอดภัยโดยต้องการ 2 สิ่ง — สิ่งที่รู้ (Password) + สิ่งที่มี (รหัสชั่วคราวจาก Authenticator App/Device)"},
+
+{m:4,q:"IAM ใน AWS ย่อมาจากอะไร?",t:"s",
+ o:["Internet Access Management","Identity and Access Management","Internal Account Management","Integrated Authentication Module"],a:[1],
+ e:"IAM = Identity and Access Management ใช้จัดการ Users, Groups, Roles และ Permissions การเข้าถึง AWS Services"},
+
+{m:4,q:"AWS KMS ใช้สำหรับอะไร?",t:"s",
+ o:["ตรวจสอบการ Login","จัดการ Encryption Keys","ส่ง Notifications","ตรวจสอบ Compliance"],a:[1],
+ e:"AWS KMS (Key Management Service) ใช้สร้าง จัดการ และควบคุม Encryption Keys สำหรับเข้ารหัสข้อมูล"},
+
+{m:4,q:"IAM Policy คืออะไร?",t:"s",
+ o:["รหัสผ่านของ IAM User","เอกสาร JSON ที่กำหนดสิทธิ์การเข้าถึง","กลุ่มของ IAM Users","Virtual Private Network"],a:[1],
+ e:"IAM Policy คือเอกสาร JSON ที่กำหนด Allow/Deny การเข้าถึง AWS Services และ Resources สำหรับ Users, Groups หรือ Roles"},
+
+{m:4,q:"AWS Organizations ช่วยทำอะไรได้? (เลือก 2 ข้อ)",t:"m",
+ o:["รวมหลาย AWS Account จัดการจากศูนย์กลาง","ใช้ Consolidated Billing ประหยัดค่าใช้จ่าย","จำกัดให้ใช้ได้เพียง 1 Region","ยกเลิก Free Tier ของทุกบัญชี"],a:[0,1],
+ e:"AWS Organizations ช่วยจัดการหลาย Account จากที่เดียว และใช้ Consolidated Billing รวมบิลเพื่อรับ Volume Discount"},
+
+// ═══════════════════════════ MODULE 5 — Networking (VPC) ═══════════════════════════
+{m:5,q:"ขนาด Subnet ที่เล็กที่สุดที่ใช้ได้ใน Amazon VPC คือเท่าไหร่?",t:"s",
+ o:["/28","/26","/24","/30"],a:[0],
+ e:"/28 มี IP ทั้งหมด 16 addresses ใช้ได้จริง 11 (AWS จอง 5) — ขนาดเล็กกว่า /28 เช่น /29, /30 ไม่รองรับใน VPC"},
+
+{m:5,q:"ช่วง IP ที่ใหญ่ที่สุดที่ใช้ได้ใน Amazon VPC คือเท่าไหร่?",t:"s",
+ o:["/30","/28","/24","/16"],a:[3],
+ e:"/16 มี IP ทั้งหมด 65,536 addresses เป็น CIDR Block ใหญ่ที่สุดที่ AWS อนุญาตใน VPC"},
+
+{m:5,q:"ทรัพยากรใน Private Subnet ต้องการเข้าถึงอินเทอร์เน็ต ต้องใช้อะไร?",t:"s",
+ o:["Security Group","NAT Gateway","Network ACL","Internet Gateway โดยตรง"],a:[1],
+ e:"NAT Gateway วางใน Public Subnet ช่วยให้ Private Subnet ออกอินเทอร์เน็ตแบบทางเดียว ภายนอกเข้าไม่ได้"},
+
+{m:5,q:"บริการใดช่วยให้องค์กรสร้างเครือข่ายเสมือนภายใน AWS?",t:"s",
+ o:["AWS Direct Connect","Amazon VPC","AWS Config","Amazon Route 53"],a:[1],
+ e:"Amazon VPC (Virtual Private Cloud) ช่วยสร้างเครือข่ายส่วนตัวเสมือน ควบคุม IP Range, Subnets, Route Tables ได้เอง"},
+
+{m:5,q:"Private Subnets สามารถเข้าถึงอินเทอร์เน็ตได้โดยตรง — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[1],
+ e:"ผิด! Private Subnet ไม่มี Internet Gateway เชื่อมต่อโดยตรง ต้องผ่าน NAT Gateway ซึ่งวางใน Public Subnet"},
+
+{m:5,q:"Network ACL ต่างจาก Security Group อย่างไร?",t:"s",
+ o:["Network ACL ทำงานระดับ Instance, Security Group ทำงานระดับ Subnet","Network ACL ทำงานระดับ Subnet และเป็น Stateless, Security Group ทำงานระดับ Instance และเป็น Stateful","ทั้งคู่ทำงานเหมือนกัน","Network ACL ไม่มีกฎ Deny"],a:[1],
+ e:"Network ACL ทำงานระดับ Subnet เป็น Stateless (ต้องกำหนด Inbound/Outbound แยก) ส่วน Security Group ระดับ Instance เป็น Stateful"},
+
+{m:5,q:"เมื่อสร้าง VPC ใหม่ อะไรถูกสร้างขึ้นอัตโนมัติ?",t:"s",
+ o:["Internet Gateway","Main Route Table","3 Subnets ใน AZ เดียว","NAT Gateway"],a:[1],
+ e:"เมื่อสร้าง VPC ใหม่ AWS จะสร้าง Main Route Table ให้อัตโนมัติ — Internet Gateway, Subnets, NAT Gateway ต้องสร้างเอง"},
+
+{m:5,q:"อะไรใช้ปกป้อง EC2 Instance โดยทำหน้าที่เป็น Virtual Firewall ระดับ Instance?",t:"s",
+ o:["Network ACL","Internet Gateway","Security Group","Route Table"],a:[2],
+ e:"Security Group ทำหน้าที่เป็น Virtual Firewall ระดับ Instance ควบคุม Inbound/Outbound Traffic ตาม Port, Protocol, IP"},
+
+{m:5,q:"CIDR Block 10.0.1.0/24 มี 256 IP — ใช้งานได้จริงกี่ตัว?",t:"s",
+ o:["246","256","251","250"],a:[2],
+ e:"256 - 5 = 251 ตัว เพราะ AWS จอง 5 addresses: Network address, VPC Router, DNS, Reserved for future, Broadcast"},
+
+{m:5,q:"AWS Direct Connect ใช้สำหรับอะไร?",t:"s",
+ o:["สร้าง Subnet ภายใน VPC","เชื่อมต่อ On-premises กับ AWS ผ่าน Dedicated Private Connection","กระจาย Traffic ภายใน VPC","จัดการ DNS"],a:[1],
+ e:"AWS Direct Connect ให้การเชื่อมต่อ Network แบบ Dedicated Private Connection จาก On-premises ไปยัง AWS โดยไม่ผ่าน Internet"},
+
+// ═══════════════════════════ MODULE 6 — Compute ═══════════════════════════
+{m:6,q:"ทำไม AWS จึงประหยัดกว่า Data Center แบบดั้งเดิมสำหรับ Workload ที่เปลี่ยนแปลง?",t:"s",
+ o:["EC2 ถูกเรียกเก็บรายเดือน","ลูกค้ามี Admin Access เต็มรูปแบบ","ลูกค้าสามารถรัน Instances รองรับ Peak ตลอดเวลา","EC2 Instances เปิด/ปิดได้ตามความต้องการ (On-demand)"],a:[3],
+ e:"On-demand คือจ่ายเฉพาะเวลาที่ใช้จริง ปรับขนาดตาม Workload — ไม่ต้องซื้อ Hardware รองรับ Peak ตลอดเวลาเหมือน Data Center"},
+
+{m:6,q:"งานที่ต้องสร้างรายงานประจำเดือนและประมวลผลข้อมูลหนัก ควรใช้ EC2 แบบใด?",t:"s",
+ o:["Spot Instances","Scheduled Reserved Instances","Dedicated Hosts","On-Demand Instances"],a:[1],
+ e:"Scheduled Reserved Instances เหมาะกับงานที่รันตามกำหนดเวลาสม่ำเสมอ จอง Capacity ล่วงหน้าและประหยัดกว่า On-demand"},
+
+{m:6,q:"Amazon Machine Image (AMI) ประกอบด้วยอะไรบ้าง?",t:"s",
+ o:["Root Volume Template เท่านั้น","Launch Permissions เท่านั้น","Block Device Mapping เท่านั้น","ทั้ง Root Volume Template, Launch Permissions และ Block Device Mapping"],a:[3],
+ e:"AMI ประกอบด้วย 3 ส่วน — Root Volume Template (OS+Software), Launch Permissions (บัญชีที่ใช้ได้) และ Block Device Mapping (Storage)"},
+
+{m:6,q:"Dedicated Instances ต่างจาก Shared Instances อย่างไร?",t:"s",
+ o:["Dedicated Instances ถูกกว่า","Dedicated Instances รันบน Physical Host ที่ไม่แชร์กับลูกค้ารายอื่น","Dedicated Instances มี Performance ต่ำกว่า","Dedicated Instances ใช้ได้เฉพาะ Windows เท่านั้น"],a:[1],
+ e:"Dedicated Instances รันบน Physical Host แยกเฉพาะ ไม่แชร์ Hardware กับ Account อื่น เหมาะสำหรับ Compliance Requirements เช่น HIPAA"},
+
+{m:6,q:"บริการ Serverless Compute บน AWS คืออะไร?",t:"s",
+ o:["AWS Config","AWS Lambda","AWS OpsWorks","Amazon EC2 Auto Scaling"],a:[1],
+ e:"AWS Lambda เป็น Serverless — รันโค้ดโดยไม่ต้องจัดการ Server จ่ายเฉพาะเวลาที่โค้ดทำงานจริง ปรับขนาดอัตโนมัติ"},
+
+{m:6,q:"บริการใดช่วยนักพัฒนา Deploy และจัดการแอปพลิเคชันบนคลาวด์ได้ง่ายโดยไม่ต้องจัดการ Infrastructure?",t:"s",
+ o:["Amazon ECS","AWS Elastic Beanstalk","AWS OpsWorks","AWS CloudFormation"],a:[1],
+ e:"Elastic Beanstalk Deploy แอปได้รวดเร็ว จัดการ Scaling, Load Balancing, Monitoring อัตโนมัติ นักพัฒนาโฟกัสที่โค้ดอย่างเดียว"},
+
+{m:6,q:"ต้องการ 4 Instances ตลอดเวลา สิ้นเดือน Traffic เพิ่ม 3 เท่า วิธีใดประหยัดที่สุด?",t:"s",
+ o:["รัน Reserved Instances 12 ตัวตลอดเวลา","รัน On-Demand 4 ตัวตลอดเวลา + On-Demand 8 ตัวสิ้นเดือน","รัน Reserved 4 ตัวตลอดเวลา + On-Demand 8 ตัวสิ้นเดือน","รัน On-Demand 4 ตัวตลอดเวลา + Reserved 8 ตัวสิ้นเดือน"],a:[2],
+ e:"Reserved 4 ตัว (Base load ประหยัด 75%) + On-Demand 8 ตัวเฉพาะช่วง Peak วันเดียว = ต้นทุนต่ำที่สุด"},
+
+{m:6,q:"Containers มีระบบปฏิบัติการสมบูรณ์อยู่ภายใน — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[1],
+ e:"ผิด! Containers แชร์ OS Kernel กับ Host บรรจุเฉพาะ Libraries, Dependencies และ Application ทำให้เบาและเร็วกว่า VM"},
+
+{m:6,q:"EC2 ประเภทใดเหมาะกับงานระยะยาวที่ Workload สม่ำเสมอและคาดเดาได้?",t:"s",
+ o:["Spot Instances","On-Demand Instances","Reserved Instances","Dedicated Hosts"],a:[2],
+ e:"Reserved Instances เหมาะกับ Workloads 24/7 ระยะยาว 1-3 ปี ประหยัดได้สูงสุด 75% เมื่อเทียบกับ On-Demand"},
+
+{m:6,q:"ต้องระบุอะไรบ้างเมื่อ Launch EC2 Windows Instance ใหม่? (เลือก 2 ข้อ)",t:"m",
+ o:["Amazon EC2 Instance ID","ประเภทของ Instance (Instance Type)","Amazon Machine Image (AMI)","รหัสผ่าน Administrator"],a:[1,2],
+ e:"ต้องระบุ AMI (กำหนด OS และซอฟต์แวร์) และ Instance Type (กำหนดขนาด CPU/RAM) — Instance ID สร้างอัตโนมัติ, Password ตั้งภายหลัง"},
+
+// ═══════════════════════════ MODULE 7 — Storage ═══════════════════════════
+{m:7,q:"Amazon S3 เป็น Object Storage เหมาะสำหรับไฟล์แบบแบนเช่น Word, รูปภาพ — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[0],
+ e:"จริง! S3 ออกแบบสำหรับ Object Storage รองรับไฟล์ทุกประเภท จัดเก็บใน Buckets เข้าถึงผ่าน Internet ได้ทุกที่"},
+
+{m:7,q:"Amazon S3 จำลองข้อมูลทั้งหมดที่ไหน?",t:"s",
+ o:["หลาย Volume ใน AZ เดียว","หลาย AZ ใน Region เดียวกัน","ข้ามหลาย Region","หลาย S3 Buckets"],a:[1],
+ e:"S3 จำลองข้อมูลอัตโนมัติอย่างน้อย 3 AZs ใน Region เดียวกัน ให้ความทนทาน 99.999999999% (11 nines)"},
+
+{m:7,q:"Storage Class ใดบ้างที่ใช้ใน S3 Object Lifecycle Policy? (เลือก 3 ข้อ)",t:"m",
+ o:["S3 Standard","AWS Storage Gateway","S3 Infrequent Access","S3 Glacier","S3 Reduced Redundancy","Amazon DynamoDB"],a:[0,2,3],
+ e:"S3 Standard (เข้าถึงบ่อย), S3 Infrequent Access (เข้าถึงไม่บ่อย) และ S3 Glacier (เก็บถาวรระยะยาว) ใช้ใน Lifecycle Policy ได้"},
+
+{m:7,q:"ชื่อของ S3 Bucket ต้องไม่ซ้ำกันที่ระดับใด?",t:"s",
+ o:["ทั่วโลกในทุกบัญชี AWS","ภายใน Region เดียวกัน","ภายในบัญชีของคุณ","ภายใน Availability Zone"],a:[0],
+ e:"S3 Bucket ใช้ชื่อเป็น URL ในการเข้าถึง จึงต้อง Unique ทั่วโลกในทุกบัญชี AWS เหมือน Domain Name บน Internet"},
+
+{m:7,q:"Amazon EFS (Elastic File System) เหมาะสำหรับอะไร?",t:"s",
+ o:["เก็บข้อมูลสำรองระยะยาว","Shared File System สำหรับ EC2 หลายเครื่องเข้าถึงพร้อมกัน","โฮสต์ Static Website","เก็บ Database Backup"],a:[1],
+ e:"Amazon EFS เป็น Shared File System รองรับ EC2 หลายเครื่องเข้าถึงพร้อมกัน ปรับขนาดอัตโนมัติ รองรับ NFS Protocol"},
+
+{m:7,q:"Amazon EBS เหมาะสำหรับข้อมูลที่มีลักษณะอย่างไร? (เลือก 2 ข้อ)",t:"m",
+ o:["ต้องการ Object-level Storage","ต้องเข้าถึงได้เร็วและเก็บระยะยาว","ต้องการ Encryption Solution","ต้องเก็บใน AZ อื่นจาก EC2"],a:[1,2],
+ e:"EBS เหมาะสำหรับข้อมูลที่ต้องเข้าถึงเร็วและเก็บระยะยาว (ข้อมูลยังอยู่แม้ Instance หยุด) และรองรับ Encryption ผ่าน AWS KMS"},
+
+{m:7,q:"ข้อมูลทั้งหมดใน S3 เปิดให้สาธารณะเข้าถึงได้โดยค่าเริ่มต้น — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[1],
+ e:"ผิด! S3 Objects ทั้งหมดเป็น Private โดยค่าเริ่มต้น AWS เปิด Block Public Access ไว้เสมอ ต้องตั้งค่าเองหากต้องการเปิดเผย"},
+
+{m:7,q:"Vault ใน Amazon S3 Glacier คืออะไร?",t:"s",
+ o:["กฎการเข้าถึง Archive","ไฟล์หรือ Object หนึ่งรายการ","Container สำหรับเก็บ Archives","นโยบายความปลอดภัย"],a:[2],
+ e:"Vault ใน S3 Glacier เปรียบได้กับ Bucket ใน S3 เป็น Container สำหรับจัดเก็บ Archives มีชื่อ Unique ใน Region"},
+
+{m:7,q:"เมื่อสร้าง S3 Bucket จะถูกผูกกับ AWS Region เฉพาะหนึ่งแห่ง — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[0],
+ e:"จริง! ทุก S3 Bucket ต้องเลือก Region ตอนสร้าง ข้อมูลจะถูกจัดเก็บใน Region นั้น ช่วยให้ปฏิบัติตาม Data Residency Requirements"},
+
+{m:7,q:"คุณสมบัติของ Amazon EBS มีอะไรบ้าง? (เลือก 2 ข้อ)",t:"m",
+ o:["ข้อมูลถูกทำซ้ำอัตโนมัติภายใน AZ เดียวกัน","Backup ไปยังเทปอัตโนมัติ","ข้อมูลหายเมื่อ Instance หยุดทำงาน","EBS Volumes สามารถเข้ารหัสได้โดยโปร่งใส"],a:[0,3],
+ e:"EBS จำลองข้อมูลใน AZ เดียวกันอัตโนมัติ และรองรับ Transparent Encryption — ไม่ได้ Backup ไปยังเทป และข้อมูลยังอยู่แม้ Instance หยุด"},
+
+// ═══════════════════════════ MODULE 8 — Databases ═══════════════════════════
+{m:8,q:"E-commerce ที่รองรับผู้ใช้หลายแสนคนพร้อมกัน ควรใช้ฐานข้อมูลใดเก็บ Session State?",t:"s",
+ o:["Amazon RDS","Amazon DynamoDB","Amazon Redshift","Amazon S3"],a:[1],
+ e:"DynamoDB มี Latency Single-digit milliseconds, ปรับขนาดอัตโนมัติ เป็น Fully Managed เหมาะสำหรับ Session State ที่ต้องเข้าถึงเร็ว"},
+
+{m:8,q:"ต้องค้นหา Item ใน DynamoDB โดยใช้ Attribute ที่ไม่ใช่ Primary Key ควรใช้คำสั่งใด?",t:"s",
+ o:["PutItem","Scan","Query","GetItem"],a:[1],
+ e:"Scan ตรวจสอบทุก Item และกรองด้วย Attribute ใดก็ได้ — Query ต้องระบุ Partition Key เสมอ, GetItem ต้องรู้ Primary Key"},
+
+{m:8,q:"การทำงานแบบ Query ใน DynamoDB ทำได้อะไรบ้าง?",t:"s",
+ o:["ใช้เฉพาะ Partition Key","ใช้ Secondary Index ได้อย่างเดียว","ดึงข้อมูลอย่างมีประสิทธิภาพเท่านั้น","ทั้งหมด — Partition Key, Secondary Index และดึงข้อมูลอย่างมีประสิทธิภาพ"],a:[3],
+ e:"Query ทำได้ครบ — ใช้ Partition Key + Sort Key Filter, Query Secondary Indexes และดึงข้อมูลจากตารางอย่างมีประสิทธิภาพ"},
+
+{m:8,q:"บริการใดเหมาะสำหรับวิเคราะห์ข้อมูลด้วย SQL มาตรฐานและเครื่องมือ BI?",t:"s",
+ o:["Amazon RDS","Amazon S3 Glacier","Amazon DynamoDB","Amazon Redshift"],a:[3],
+ e:"Amazon Redshift เป็น Data Warehouse สำหรับ Analytics โดยเฉพาะ รองรับ Standard SQL เชื่อมกับ BI Tools ได้ ประมวลผล Petabyte ได้"},
+
+{m:8,q:"ใน Amazon DynamoDB, Attribute คืออะไร?",t:"s",
+ o:["หน่วยข้อมูลพื้นฐาน (Fundamental data element)","ชุดของ Items (Collection of items)","ชุดของ Attributes (Collection of attributes)","ตาราง (Table)"],a:[0],
+ e:"Attribute คือหน่วยข้อมูลที่เล็กที่สุดใน DynamoDB เปรียบเหมือน Field/Column แต่ละ Item ประกอบด้วย Attributes หลายตัว"},
+
+{m:8,q:"แอปที่ต้องการฐานข้อมูล Performance สูง ขยายตัวเร็ว และโครงสร้างยืดหยุ่น ควรใช้อะไร?",t:"s",
+ o:["Amazon RDS","Amazon ElastiCache","Amazon DynamoDB","Amazon Redshift"],a:[2],
+ e:"DynamoDB — Latency ต่ำ Single-digit ms, Auto Scale ไม่จำกัด, NoSQL ไม่ต้องกำหนด Schema ล่วงหน้า, Fully Managed"},
+
+{m:8,q:"กรณีการใช้งานใดเหมาะสำหรับ Amazon RDS?",t:"s",
+ o:["Massive Read/Write Rates","Simple GET หรือ PUT Requests","Complex Transactions ที่ต้องการ ACID","การเก็บ Session Data"],a:[2],
+ e:"RDS รองรับ ACID Transactions อย่างสมบูรณ์ เหมาะกับข้อมูลที่มีความสัมพันธ์ซับซ้อน Joins, Foreign Keys, Stored Procedures"},
+
+{m:8,q:"บริษัทมี .NET เชื่อมต่อ MySQL ต้องการ High Availability + Automated Backup บน AWS ควรใช้อะไร?",t:"s",
+ o:["Amazon Redshift","Amazon Aurora","Amazon RDS","Amazon DynamoDB"],a:[1],
+ e:"Aurora รองรับ MySQL สมบูรณ์, HA ในตัวสูงกว่า RDS, Backup อัตโนมัติ, จำลองข้อมูล 3 AZs อัตโนมัติ, เร็วกว่า MySQL 5 เท่า"},
+
+{m:8,q:"Amazon RDS Patch อัตโนมัติ, Backup รายวัน และรองรับ Point-in-time Recovery — ถูกหรือผิด?",t:"s",
+ o:["ถูก (True)","ผิด (False)"],a:[0],
+ e:"จริง! RDS เป็น Fully Managed Database จัดการ Patch, Backup รายวัน, กำหนด Retention Period และ Point-in-time Recovery ได้"},
+
+{m:8,q:"ควรพิจารณาอะไรบ้างเมื่อเลือกประเภทฐานข้อมูล?",t:"s",
+ o:["ขนาดข้อมูล (Data Size) เท่านั้น","ความถี่การ Query เท่านั้น","ทั้ง Data Size, Access Period, Query Frequency และ High Availability","สีของ Dashboard เท่านั้น"],a:[2],
+ e:"ควรพิจารณาครบทุกด้าน — ขนาดข้อมูล, ช่วงเวลาการเข้าถึง, ความถี่การ Query และความพร้อมใช้งานสูง"},
+
+// ═══════════════════════════ MODULE 9 — Well-Architected Framework ═══════════════════════════
+{m:9,q:"ข้อใดต่อไปนี้ ไม่ใช่ ส่วนหนึ่งของ Performance Efficiency Pillar?",t:"s",
+ o:["Tradeoffs","Selection","Traceability","Monitoring"],a:[2],
+ e:"4 ด้านของ Performance Efficiency Pillar คือ Selection, Review, Monitoring และ Tradeoffs — Traceability อยู่ใน Security Pillar"},
+
+{m:9,q:"หลักการออกแบบระบบบนคลาวด์ที่ถูกต้องคืออะไร?",t:"s",
+ o:["สร้าง Component ที่เชื่อมต่อกันแน่น (Tightly-coupled)","เปลี่ยนแปลงเป็นชุดใหญ่ไม่บ่อยครั้ง","สมมติว่าทุกอย่างจะล้มเหลวในที่สุด","ใช้บริการให้มากที่สุดเท่าที่ทำได้"],a:[2],
+ e:"'Assume everything will fail' — ออกแบบระบบให้ทนทาน สร้าง Redundancy, Failover อัตโนมัติ และทดสอบด้วยการจำลองความล้มเหลว"},
+
+{m:9,q:"AWS Well-Architected Framework มีกี่ Pillars?",t:"s",
+ o:["4 Pillars","5 Pillars","6 Pillars","7 Pillars"],a:[2],
+ e:"มี 6 Pillars: Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization และ Sustainability"},
+
+{m:9,q:"Pillars ของ AWS Well-Architected Framework มีอะไรบ้าง? (เลือก 3 ข้อ)",t:"m",
+ o:["Security","Persistence","Operational Excellence","Cost Optimization","Data Analytics"],a:[0,2,3],
+ e:"3 ใน 6 Pillars ที่ถูกต้องคือ Security, Operational Excellence และ Cost Optimization (Pillars จริงทั้งหมด 6 ตัว)"},
+
+{m:9,q:"หลักการออกแบบด้าน Performance Efficiency ที่ถูกต้องมีอะไรบ้าง? (เลือก 2 ข้อ)",t:"m",
+ o:["ปรับปริมาณ Resource ให้เหมาะสม","วิเคราะห์และระบุค่าใช้จ่าย","ใช้ Serverless Architectures","ทำให้เทคโนโลยีขั้นสูง (AI/ML) เข้าถึงได้ง่าย (Democratize)"],a:[2,3],
+ e:"Performance Efficiency แนะนำ Serverless (ลดภาระ Infrastructure) และ Democratize Advanced Technologies (ใช้ ML/Big Data ที่ AWS จัดการ)"},
+
+{m:9,q:"AWS Trusted Advisor ให้ข้อมูลใน 5 หมวดหมู่ใด?",t:"s",
+ o:["Security, Access Control, High Availability, Performance, Service Limits",
+    "Performance, Cost Optimization, Access Control, Connectivity, Security",
+    "Performance, Cost Optimization, Security, Fault Tolerance, Service Limits",
+    "Security, Fault Tolerance, High Availability, Connectivity, Service Limits"],a:[2],
+ e:"Trusted Advisor ตรวจสอบ 5 หมวด — Performance, Cost Optimization, Security, Fault Tolerance และ Service Limits"},
+
+{m:9,q:"Sustainability Pillar ใน Well-Architected Framework เน้นเรื่องอะไร?",t:"s",
+ o:["กู้คืนจากความล้มเหลวได้รวดเร็ว","ลดผลกระทบต่อสิ่งแวดล้อมจาก Cloud Workloads","หลีกเลี่ยงต้นทุนที่ไม่จำเป็น","อัปเดต Workloads อัตโนมัติ"],a:[1],
+ e:"Sustainability Pillar มุ่งลดผลกระทบสิ่งแวดล้อม — ลดการใช้พลังงาน, ลด Carbon Footprint, ใช้พลังงานหมุนเวียน"},
+
+{m:9,q:"เครื่องมือออนไลน์ใดช่วยตรวจสอบ Security Configuration หลังย้ายขึ้น AWS?",t:"s",
+ o:["Amazon Kinesis","AWS Support","AWS Trusted Advisor","Amazon CloudWatch"],a:[2],
+ e:"AWS Trusted Advisor ตรวจสอบ Security Settings อัตโนมัติ แนะนำการปรับปรุงตาม Best Practices ใน 5 หมวดหมู่"},
+
+{m:9,q:"Reliability คืออะไร?",t:"s",
+ o:["ความสามารถขยายขนาดระบบ","ตัวชี้วัดความสามารถให้บริการฟังก์ชันได้เมื่อผู้ใช้ต้องการ","ความเร็วในการประมวลผล","จำนวน Requests ต่อวินาที"],a:[1],
+ e:"Reliability วัดความสามารถของระบบในการให้บริการตามที่ผู้ใช้ต้องการ ครอบคลุมความถูกต้อง พร้อมใช้งาน และกู้คืนจากความล้มเหลว"},
+
+{m:9,q:"ระบบที่ทนต่อการเสื่อมสภาพบางระดับ มี Minimal Downtime และต้องการ Human Intervention น้อยที่สุด คือระบบประเภทใด?",t:"s",
+ o:["Scalable","Fault-tolerant","Elastic","Highly Available"],a:[3],
+ e:"Highly Available = ทนต่อ Some degradation, Minimal downtime, กู้คืนอัตโนมัติ — ต่างจาก Fault Tolerant ที่ต้องการ Zero Downtime"},
+
+// ═══════════════════════════ MODULE 10 — Auto Scaling & Monitoring ═══════════════════════════
+{m:10,q:"เครื่องมือ AWS ใดช่วยให้แอปพลิเคชันขยายขนาดขึ้นลงตามความต้องการ? (เลือก 2 ข้อ)",t:"m",
+ o:["Availability Zones","Amazon EC2 Auto Scaling","AWS CloudFormation","Elastic Load Balancing","AWS Config"],a:[1,3],
+ e:"EC2 Auto Scaling เพิ่ม/ลด Instances อัตโนมัติตาม Demand และ Elastic Load Balancing กระจาย Traffic — ทำงานร่วมกัน"},
+
+{m:10,q:"จะใช้บริการใดในการส่ง Alerts ที่สร้างจาก CloudWatch Alarms?",t:"s",
+ o:["Amazon Simple Notification Service (SNS)","AWS CloudTrail","AWS Trusted Advisor","Amazon Route 53"],a:[0],
+ e:"Amazon SNS เชื่อมต่อกับ CloudWatch Alarms โดยตรง ส่งแจ้งเตือนได้หลายช่องทางพร้อมกัน — Email, SMS, Lambda, SQS"},
+
+{m:10,q:"ลักษณะของ Amazon EC2 Auto Scaling มีอะไรบ้าง? (เลือก 3 ข้อ)",t:"m",
+ o:["รองรับเฉพาะ Dynamic Scaling","เพิ่ม/ลด Instances ตอบสนองสภาวะที่เปลี่ยนแปลง","ส่ง Push Notifications","เปิด Instance จาก AMI ที่กำหนดไว้","บังคับให้มี Instances ขั้นต่ำเสมอ"],a:[1,3,4],
+ e:"Auto Scaling: ตอบสนองสภาวะที่เปลี่ยนแปลง (Scale Up/Down), เปิด Instance จาก AMI ที่กำหนด และบังคับ Minimum Instances"},
+
+{m:10,q:"ต้องกำหนดค่าองค์ประกอบใดบน Elastic Load Balancer เพื่อรับ Traffic?",t:"s",
+ o:["A Port","A Network Interface","A Listener","An Instance"],a:[2],
+ e:"Listener ตรวจสอบ Connection Requests กำหนด Protocol/Port และ Rules ส่ง Traffic ไปยัง Target Groups — ต้องมีอย่างน้อย 1 ตัว"},
+
+{m:10,q:"องค์ประกอบใดใช้สร้าง EC2 Auto Scaling Launch Configuration? (เลือก 3 ข้อ)",t:"m",
+ o:["Amazon Machine Image (AMI)","Load Balancer","Instance Type","VPC และ Subnets","Amazon EBS Volumes"],a:[0,2,4],
+ e:"Launch Configuration ต้องระบุ AMI (OS), Instance Type (ขนาด) และ EBS Volumes (Storage) — Load Balancer และ VPC เป็นของ Auto Scaling Group"},
+
+{m:10,q:"บริการใดรวบรวม Metrics จาก Amazon RDS และ Amazon EC2 Instances ได้?",t:"s",
+ o:["Amazon CloudFront","Amazon CloudSearch","Amazon CloudWatch","AWS CloudTrail"],a:[2],
+ e:"Amazon CloudWatch รวบรวม Metrics จาก EC2, RDS และบริการอื่นๆ อัตโนมัติ แสดง Real-time Dashboard และตั้ง Alarms ได้"},
+
+{m:10,q:"องค์ประกอบของ Auto Scaling Group มีอะไรบ้าง? (เลือก 3 ข้อ)",t:"m",
+ o:["Minimum Size (ขนาดขั้นต่ำ)","Health Checks","Desired Capacity (ความจุที่ต้องการ)","Maximum Size (ขนาดสูงสุด)"],a:[0,2,3],
+ e:"Auto Scaling Group กำหนด 3 ค่าหลัก — Minimum Size (รันเสมอ), Desired Capacity (ปกติ) และ Maximum Size (สูงสุดที่อนุญาต)"},
+
+{m:10,q:"บริษัทต้องการบันทึก Log การเข้าถึง AWS Resources ทั้งหมดเพื่อ Audit ควรใช้บริการใด?",t:"s",
+ o:["Amazon CloudWatch","AWS CloudTrail","Amazon EC2","Amazon SNS"],a:[1],
+ e:"AWS CloudTrail บันทึก API Calls ทุกครั้ง ระบุว่าใครทำอะไรเมื่อไหร่จากที่ไหน เก็บ Log ใน S3 รองรับ Audit & Compliance"},
+
+{m:10,q:"Elastic Load Balancing มี Load Balancer กี่ประเภทหลัก? (เลือก 3 ข้อ)",t:"m",
+ o:["Internet Load Balancer","Application Load Balancer","Network Load Balancer","Compute Load Balancer","Classic Load Balancer"],a:[1,2,4],
+ e:"ELB มี 3 ประเภท — Application LB (Layer 7 HTTP/HTTPS), Network LB (Layer 4 TCP/UDP) และ Classic LB (รุ่นเก่า)"},
+
+{m:10,q:"เมื่อ Elastic Load Balancing ตรวจพบ Target Unhealthy จะเกิดอะไรขึ้น? (เลือก 3 ข้อ)",t:"m",
+ o:["หยุดส่ง Traffic ไปยัง Target ที่มีปัญหา","เรียก Alarm แจ้งเตือน","กลับส่ง Traffic เมื่อ Target หายดีอัตโนมัติ","กลับส่ง Traffic เมื่อ Restart ด้วยตนเอง","ส่ง Traffic ไปยัง Healthy Target แทน"],a:[0,2,4],
+ e:"ELB จัดการอัตโนมัติ 3 ขั้นตอน — หยุดส่งไปยัง Unhealthy, ส่งไปยัง Healthy Target แทน และกลับมาอัตโนมัติเมื่อหายดี"},
+];
+
+// ─── Engine ───
+let quiz=[], idx=0, score=0, answered=0, hist=[], modScores={};
+let sel=new Set();
+
+function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function startQuiz(){
+  const mf=parseInt(document.getElementById('mf').value);
+  const qc=document.getElementById('qc').value;
+  let pool=mf===0?[...Q]:Q.filter(q=>q.m===mf);
+  pool=shuffle(pool);
+  if(qc!=='100')pool=pool.slice(0,parseInt(qc));
+  quiz=pool.map(q=>({...q,opts:shuffle(q.o.map((t,i)=>({t,correct:q.a.includes(i)})))}));
+  idx=0;score=0;answered=0;hist=[];sel=new Set();
+  modScores={};
+  for(let m=1;m<=10;m++)modScores[m]={c:0,t:0};
+  document.getElementById('start-page').style.display='none';
+  document.getElementById('quiz-page').style.display='block';
+  document.getElementById('hdr-stats').style.display='flex';
+  render();updateStreak();
+}
+
+function render(){
+  const q=quiz[idx];
+  const L=['A','B','C','D','E','F'];
+  const multi=q.t==='m';
+  let opts=q.opts.map((o,i)=>`
+    <div class="opt" id="o${i}" onclick="${multi?`tog(${i})`:`pick(${i})`}">
+      <div class="olet" id="ol${i}">${L[i]}</div>
+      <span>${o.t}</span>
+      <span class="oico" id="oi${i}"></span>
+    </div>`).join('');
+  document.getElementById('qcon').innerHTML=`
+    <div class="qcard">
+      <div class="qmeta">
+        <div class="qbadge">Q${idx+1} / ${quiz.length}</div>
+        <div class="mtag">Module ${q.m} · ${MN[q.m]}</div>
+      </div>
+      <div class="qtxt">${q.q}</div>
+      ${multi?'<div class="mhint">⚠️ เลือกได้หลายข้อ</div>':''}
+      <div class="opts">${opts}</div>
+      <div class="exp" id="exp"></div>
+      <div class="acts">
+        <button class="btn btn-chk" id="bchk" onclick="check()" disabled>✓ ตรวจคำตอบ</button>
+        <button class="btn btn-nxt" id="bnxt" onclick="next()" style="display:none">
+          ${idx<quiz.length-1?'ข้อถัดไป →':'ดูผลสรุป 🎯'}
+        </button>
+      </div>
+    </div>`;
+  updateProg();
+}
+
+function pick(i){
+  sel=new Set([i]);
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  document.getElementById(`o${i}`).classList.add('sel');
+  document.getElementById('bchk').disabled=false;
+}
+
+function tog(i){
+  sel.has(i)?sel.delete(i):sel.add(i);
+  document.querySelectorAll('.opt').forEach((o,x)=>{
+    sel.has(x)?o.classList.add('sel'):o.classList.remove('sel');
+  });
+  document.getElementById('bchk').disabled=sel.size===0;
+}
+
+function check(){
+  const q=quiz[idx];
+  const cIdxs=q.opts.map((o,i)=>o.correct?i:-1).filter(i=>i>=0);
+  const ok=sel.size===cIdxs.length&&[...sel].every(s=>cIdxs.includes(s));
+  document.querySelectorAll('.opt').forEach(o=>{o.classList.add('dis');o.onclick=null;});
+  q.opts.forEach((o,i)=>{
+    const el=document.getElementById(`o${i}`),ico=document.getElementById(`oi${i}`);
+    if(o.correct&&sel.has(i)){el.classList.remove('sel');el.classList.add('cor');ico.textContent='✅';}
+    else if(!o.correct&&sel.has(i)){el.classList.remove('sel');el.classList.add('wrg');ico.textContent='❌';}
+    else if(o.correct&&!sel.has(i)){el.classList.add('msd');ico.textContent='⬆️';}
+  });
+  if(ok)score++;
+  answered++;
+  hist.push(ok);
+  modScores[q.m].t++;
+  if(ok)modScores[q.m].c++;
+  const exp=document.getElementById('exp');
+  exp.className='exp show';
+  exp.innerHTML=`<div class="exph ${ok?'ec':'ew'}">${ok?'✅ ถูกต้อง!':'❌ ไม่ถูกต้อง'}</div>
+    <div class="expt">${q.e}</div>`;
+  document.getElementById('bchk').style.display='none';
+  document.getElementById('bnxt').style.display='block';
+  updateStats();updateStreak();
+}
+
+function next(){
+  sel=new Set();
+  if(idx<quiz.length-1){idx++;render();}
+  else showResult();
+}
+
+function updateProg(){
+  const p=(idx/quiz.length)*100;
+  document.getElementById('pfill').style.width=p+'%';
+  document.getElementById('pgt').textContent=`ข้อ ${idx+1} จาก ${quiz.length}`;
+  document.getElementById('psc').textContent=`คะแนน: ${score}/${answered}`;
+}
+
+function updateStats(){
+  const w=answered-score,p=answered>0?Math.round(score/answered*100):0;
+  document.getElementById('sc').textContent=score;
+  document.getElementById('sw').textContent=w;
+  document.getElementById('sp').textContent=p+'%';
+  document.getElementById('psc').textContent=`คะแนน: ${score}/${answered}`;
+  document.getElementById('pfill').style.width=((idx+1)/quiz.length*100)+'%';
+}
+
+function updateStreak(){
+  document.getElementById('streak').innerHTML=quiz.map((_,i)=>{
+    let cls=i<hist.length?(hist[i]?'c':'w'):'';
+    if(i===idx&&!cls)cls='cur';
+    return `<div class="s-dot ${cls}" title="ข้อ ${i+1}"></div>`;
+  }).join('');
+}
+
+function showResult(){
+  document.getElementById('quiz-page').style.display='none';
+  document.getElementById('result-page').style.display='block';
+  const total=quiz.length,pct=Math.round(score/total*100),wrong=total-score;
+  let lv,lc,ld;
+  if(pct>=90){lv='🏆 พร้อมสอบระดับ Expert';lc='var(--success)';ld='ยอดเยี่ยม! คุณมีความพร้อมสูงมากในการสอบ AWS Cloud Practitioner ผ่านเกณฑ์ 90% ขึ้นไป!';}
+  else if(pct>=75){lv='🌟 เกือบพร้อมแล้ว';lc='var(--accent)';ld='ทำได้ดีมาก! ทบทวนโมดูลที่ยังอ่อนเพิ่มเติม โดยเฉพาะข้อที่ตอบผิด แล้วลองทำซ้ำ';}
+  else if(pct>=60){lv='📚 ต้องทบทวนเพิ่ม';lc='var(--warning)';ld='ผ่านเกณฑ์ขั้นต้น แต่ควรทบทวนเนื้อหาให้ครบก่อนสอบจริง เน้นโมดูลที่คะแนนต่ำ';}
+  else{lv='💪 ต้องฝึกเพิ่มอีก';lc='var(--danger)';ld='ยังต้องศึกษาเพิ่มเติม กลับไปอ่านเนื้อหาแต่ละ Module ให้เข้าใจก่อนทำข้อสอบใหม่';}
+
+  // Module breakdown
+  const modKeys=Object.keys(modScores).filter(m=>modScores[m].t>0);
+  let breakdown=modKeys.map(m=>{
+    const {c,t}=modScores[m];
+    const mp=t>0?Math.round(c/t*100):0;
+    const barColor=mp>=80?'var(--success)':mp>=60?'var(--warning)':'var(--danger)';
+    return `<div class="rmb-row">
+      <div class="rmb-name">M${m}·${MN[m].split(' ')[0]}</div>
+      <div class="rmb-bar-wrap"><div class="rmb-bar" style="width:${mp}%;background:${barColor}"></div></div>
+      <div class="rmb-score" style="color:${barColor}">${c}/${t}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('res-con').innerHTML=`
+    <div class="res-circ" style="background:conic-gradient(var(--accent) ${pct*3.6}deg,var(--surface2) 0);box-shadow:0 0 40px rgba(0,212,255,.3)">
+      <div class="res-inner"><div class="res-pct">${pct}%</div><div class="res-plbl">คะแนน</div></div>
+    </div>
+    <div class="res-title">ผลการทำแบบทดสอบ</div>
+    <div class="res-sub">ทำข้อสอบ ${total} ข้อเสร็จแล้ว!</div>
+    <div class="res-stats">
+      <div class="rs"><div class="rs-n" style="color:var(--success)">${score}</div><div class="rs-l">✅ ถูกต้อง</div></div>
+      <div class="rs"><div class="rs-n" style="color:var(--danger)">${wrong}</div><div class="rs-l">❌ ผิด</div></div>
+      <div class="rs"><div class="rs-n" style="color:var(--accent)">${total}</div><div class="rs-l">📝 ทั้งหมด</div></div>
+    </div>
+    <div class="res-lv">
+      <div class="lv-badge" style="background:${lc}20;color:${lc};border:1px solid ${lc}">${lv}</div>
+      <div class="lv-desc">${ld}</div>
+    </div>
+    ${modKeys.length>1?`<div class="res-mod-breakdown"><div class="rmb-title">📊 คะแนนแยกตามโมดูล</div>${breakdown}</div>`:''}
+    <div>
+      <button class="btn-rs" onclick="restart()">🔄 ทำใหม่ (สุ่มข้อใหม่)</button>
+      <button class="btn-rs-o" onclick="goHome()">🏠 เลือก Module</button>
+    </div>`;
+}
+
+function restart(){document.getElementById('result-page').style.display='none';startQuiz();}
+function goHome(){
+  document.getElementById('result-page').style.display='none';
+  document.getElementById('quiz-page').style.display='none';
+  document.getElementById('start-page').style.display='block';
+  document.getElementById('hdr-stats').style.display='none';
+}
+
+// Init
+window.onload=()=>{
+  const g=document.getElementById('mod-grid');
+  for(let m=1;m<=10;m++){
+    const cnt=Q.filter(q=>q.m===m).length;
+    g.innerHTML+=`<div class="mod-card"><div class="mc-num">MODULE ${m}</div>
+      <div class="mc-name">${MN[m]}</div><div class="mc-cnt">${cnt} ข้อ</div></div>`;
+  }
+};
+</script>
+</body>
+</html>
